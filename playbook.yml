@@ -1,0 +1,14 @@
+- name: Install Nginx
+  hosts: webservers
+  become: yes
+  tasks:
+    - name: Update webservers
+      dnf:
+        name: "*"
+        state: latest 
+    - name: Install Nginx
+      dnf:
+        name: nginx
+        state: present
+
+
