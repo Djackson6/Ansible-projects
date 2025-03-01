@@ -1,14 +1,20 @@
-- name: Install Nginx
-  hosts: webservers
+- name: 'Install nginx server'
+  hosts: server1
   become: yes
   tasks:
-    - name: Update webservers
+    - name: 'Update server1'
       dnf:
-        name: "*"
-        state: latest 
-    - name: Install Nginx
+        name: '*'
+        state: latest
+
+    - name: 'Install Nginx'
       dnf:
         name: nginx
-        state: present
+        state: latest
 
+    - name: 'Run Nginx'
+      service:
+        name: nginx
+        state: started
+        enabled: yes
 
