@@ -1,0 +1,30 @@
+- name: Create user
+  hosts: server1
+  become: yes
+  tasks:
+    - name: "Ensure group exist"
+      group:
+        name: "{{ item.groups }}"
+        state: present
+      loop:
+        - { username: "devuser", groups: "sudo" }
+
+    - name: "Ensure user is created"
+      user: 
+        name: "{{ item.username }}"
+        state: present
+        shell: /bin/bash
+        home: "/home/{{ item.username }}"
+        groups: "{{ item.groups }}"
+      loop:
+        - { username: "devuser", groups: "sudo" }
+   
+    - name: "Allow user to run sudo without password"
+      lineinfile:
+        path: /etc/sudoers
+        line: "{{ item }} ALL=(ALL) NOPASSWD: ALL"
+        state: present
+        #validate sudoers file in a temp file to prevent breaking/lockout of real file 
+        validate: 'visudo -cf %s'
+      loop:
+        - 'devuser'
